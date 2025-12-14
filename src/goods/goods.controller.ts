@@ -5,9 +5,11 @@ import { GoodsService } from './goods.service';
 @Controller()
 export class GoodsController {
   constructor(private goodsService: GoodsService) {}
-
+  /// API lấy DS các goods theo typeId
   @Get('goods')
-  async getCustomerId(@Query('typeIds') typeIds: number[]): Promise<Goods[]> {
+  async getGoodsByTypeId(
+    @Query('typeIds') typeIds: number[],
+  ): Promise<Goods[]> {
     return await this.goodsService.getGoodsByTypeId(typeIds);
   }
 }

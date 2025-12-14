@@ -19,6 +19,7 @@ export class Goods {
   })
   amount: number;
   @Column({
+    type: 'double',
     name: 'price',
   })
   price: number;
