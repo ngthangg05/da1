@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { FavService } from './fav.service';
-import { FavInfo } from './interface/fav.interface';
+import { FavGoodsInfo, FavInfo } from './interface/fav.interface';
 
 @Controller()
 export class FavController {
@@ -10,13 +10,16 @@ export class FavController {
   async createFav(@Body() favInfo: FavInfo): Promise<number> {
     return await this.favService.createFav(favInfo.customerId, favInfo.goodsId);
   }
+
   @Get('fav/get')
   async getFavs(
     @Query('customerId') customerId: number,
-  ): Promise<number | undefined> {
-    return await this.customerService.getCustomerId(
-      customerInfo.username,
-      customerInfo.password,
-    );
+  ): Promise<FavGoodsInfo[]> {
+    return await this.favService.getFav(customerId);
+  }
+
+  @Post('fav/delete')
+  async deleteFav(@Body('favId') favId: number): Promise<void> {
+    await this.favService.deleteFav(favId);
   }
 }

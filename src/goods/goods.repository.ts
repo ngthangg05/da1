@@ -18,4 +18,17 @@ export class GoodsRepository {
       },
     });
   }
+
+  async getGoodsInfo(goodsId: number): Promise<Goods | null> {
+    return await this.goodsRepository.findOne({
+      select: ['id', 'type', 'amount', 'goodName', 'price', 'image'],
+      where: {
+        id: goodsId,
+      },
+    });
+  }
+
+  async updateGoodsInfo(goodsInfo: Partial<Goods>): Promise<void> {
+    await this.goodsRepository.save(goodsInfo);
+  }
 }

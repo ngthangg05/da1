@@ -8,8 +8,10 @@ import { GoodsModule } from './goods/goods.module';
 import { Goods } from './goods/goods.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { Fav } from './favorite_goods/fav,entity';
+import { Fav } from './favorite_goods/fav.entity';
 import { FavModule } from './favorite_goods/fav.module';
+import { CartModule } from './cart/cart.module';
+import { Cart } from './cart/cart.entity';
 
 @Module({
   imports: [
@@ -22,14 +24,15 @@ import { FavModule } from './favorite_goods/fav.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'ngthang05',
-      database: 'doan',
-      entities: [Customers, Goods, Fav],
+      password: '123456',
+      database: 'master',
+      entities: [Customers, Goods, Fav, Cart],
       synchronize: false,
     }),
     CustomerModule,
     GoodsModule,
     FavModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

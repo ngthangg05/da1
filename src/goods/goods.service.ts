@@ -9,4 +9,12 @@ export class GoodsService {
   async getGoodsByTypeId(types: number[]): Promise<Goods[]> {
     return await this.goodsRepository.getGoodsTypeId(types);
   }
+
+  async getGoodsInfo(goodsId: number): Promise<Goods | null> {
+    return await this.goodsRepository.getGoodsInfo(goodsId);
+  }
+
+  async updateGoodsInfo(goodsInfo: Partial<Goods>): Promise<void> {
+    await this.goodsRepository.updateGoodsInfo(goodsInfo);
+  }
 }

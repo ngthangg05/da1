@@ -1,16 +1,17 @@
-export interface FavInfo {
+export interface CartInfo {
   customerId: number;
   goodsId: number;
+  amount: number;
 }
 
-export interface FavGoodsInfo {
-  favId: number;
+export interface CartGoodsInfo {
+  cartId: number;
   customerId: number;
   goodsId: number;
   name: string;
   type: number;
   goodName: string;
-  amount: number;
+  cartAmount: number;
   price: number;
   image: string;
 }
