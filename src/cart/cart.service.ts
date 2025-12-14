@@ -3,12 +3,15 @@ import { CartRepository } from './cart.repository';
 import { CartGoodsInfo } from './interface/cart.interface';
 import { GoodsService } from 'src/goods/goods.service';
 import { Goods } from 'src/goods/goods.entity';
+import { Orders } from 'src/order/orders.entity';
+import { OrderService } from 'src/order/orders.service';
 
 @Injectable()
 export class CartService {
   constructor(
     private cartRepository: CartRepository,
     private goodsService: GoodsService,
+    private orderService: OrderService,
   ) {}
 
   async createCart(
@@ -80,6 +83,14 @@ export class CartService {
         totalCost = totalCost + cost;
       }
       for (const cartInfo of cartInfos) {
+        const orderInfo: Partial<Orders> = {
+          customerId: cartInfo.customerId,
+          goodsId: cartInfo.goodsId,
+          amount: cartInfo.cartAmount,
+          price: cartInfo.price,
+          createdAt: new Date(),
+        };
+        await this.orderService.saveOrder(orderInfo);
         await this.cartRepository.deleteCartById(cartInfo.cartId);
       }
       for (const goodsInfo of goodsInfos) {
@@ -89,5 +100,6 @@ export class CartService {
       console.log('Payment failed: ' + error.message);
       return null;
     }
-    return totalCost;}
+    return totalCost;
+  }
 }

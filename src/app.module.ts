@@ -12,6 +12,8 @@ import { Fav } from './favorite_goods/fav.entity';
 import { FavModule } from './favorite_goods/fav.module';
 import { CartModule } from './cart/cart.module';
 import { Cart } from './cart/cart.entity';
+import { Orders } from './order/orders.entity';
+import { OrderModule } from './order/orders.module';
 
 @Module({
   imports: [
@@ -26,13 +28,14 @@ import { Cart } from './cart/cart.entity';
       username: 'root',
       password: '123456',
       database: 'master',
-      entities: [Customers, Goods, Fav, Cart],
+      entities: [Customers, Goods, Fav, Cart, Orders],
       synchronize: false,
     }),
     CustomerModule,
     GoodsModule,
     FavModule,
     CartModule,
+    OrderModule
   ],
   controllers: [AppController],
   providers: [AppService],
