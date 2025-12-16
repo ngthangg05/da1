@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CustomerInfo } from './interface/customer.interface';
 
@@ -16,7 +16,7 @@ export class CustomerController {
     );
   }
 
-  @Get('user/get')
+  @Post('user/get')
   async getCustomerId(
     @Body() customerInfo: CustomerInfo,
   ): Promise<number | undefined> {

@@ -6,6 +6,10 @@ import { Goods } from './goods.entity';
 export class GoodsService {
   constructor(private goodsRepository: GoodsRepository) {}
 
+  async getAllGoods(): Promise<Goods[]> {
+    return await this.goodsRepository.getAllGoods();
+  }
+
   async getGoodsByTypeId(types: number[]): Promise<Goods[]> {
     return await this.goodsRepository.getGoodsTypeId(types);
   }

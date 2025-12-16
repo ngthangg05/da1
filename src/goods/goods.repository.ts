@@ -10,6 +10,12 @@ export class GoodsRepository {
     private goodsRepository: Repository<Goods>,
   ) {}
 
+  async getAllGoods(): Promise<Goods[]> {
+    return await this.goodsRepository.find({
+      select: ['id', 'type', 'amount', 'goodName', 'price', 'image'],
+    });
+  }
+
   async getGoodsTypeId(typeIds: number[]): Promise<Goods[]> {
     return await this.goodsRepository.find({
       select: ['id', 'type', 'amount', 'goodName', 'price', 'image'],
