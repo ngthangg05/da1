@@ -94,7 +94,10 @@ export class CartService {
         await this.cartRepository.deleteCartById(cartInfo.cartId);
       }
       for (const goodsInfo of goodsInfos) {
-        await this.goodsService.updateGoodsInfo(goodsInfo);
+        await this.goodsService.updateGoodsAmount(
+          goodsInfo.id,
+          goodsInfo.amount,
+        );
       }
     } catch (error) {
       console.log('Payment failed: ' + error.message);

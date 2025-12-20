@@ -1,7 +1,8 @@
+import { Role } from 'src/common/constant';
 import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
-@Entity('customers')
-export class Customers {
+@Entity('user')
+export class User {
   @PrimaryColumn({ name: 'id', generated: 'increment' })
   id: number;
 
@@ -16,4 +17,9 @@ export class Customers {
     length: 255,
   })
   passwordHash: string;
+
+  @Column({
+    name: 'role',
+  })
+  role: Role;
 }

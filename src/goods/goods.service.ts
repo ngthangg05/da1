@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GoodsRepository } from './goods.repository';
 import { Goods } from './goods.entity';
+import { Role } from 'src/common/constant';
 
 @Injectable()
 export class GoodsService {
@@ -18,7 +19,48 @@ export class GoodsService {
     return await this.goodsRepository.getGoodsInfo(goodsId);
   }
 
-  async updateGoodsInfo(goodsInfo: Partial<Goods>): Promise<void> {
-    await this.goodsRepository.updateGoodsInfo(goodsInfo);
+  async updateGoodsInfo(
+    goodId: number,
+    goodsInfo: Partial<Goods>,
+    userRole: Role,
+  ): Promise<void> {
+    if (userRole !== Role.ADMIN) {
+      throw new Error('Unauthorized');
+    }
+    await this.goodsRepository.updateGoodsById(goodId, goodsInfo);
+  }
+
+  async updateGoodsAmount(goodId: number, amount: number): Promise<void> {
+    const goodsInfo: Partial<Goods> = {
+      amount,
+    };
+    await this.goodsRepository.updateGoodsById(goodId, goodsInfo);
+  }
+
+  async createGoods(
+    type: number,
+    amount: number,
+    goodName: string,
+    price: number,
+    image: string,
+    userRole: Role,
+  ): Promise<number> {
+    if (userRole !== Role.ADMIN) {
+      throw new Error('Unauthorized');
+    }
+    return await this.goodsRepository.createGoods(
+      type,
+      amount,
+      goodName,
+      price,
+      image,
+    );
+  }
+
+  async deleteGoods(goodsId: number, userRole: Role): Promise<void> {
+    if (userRole !== Role.ADMIN) {
+      throw new Error('Unauthorized');
+    }
+    await this.goodsRepository.deleteGoods(goodsId);
   }
 }

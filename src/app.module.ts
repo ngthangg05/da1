@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CustomerModule } from './customer/customer.module';
+import { CustomerModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Customers } from './customer/customer.entity';
+import { User } from './user/user.entity';
 import { GoodsModule } from './goods/goods.module';
 import { Goods } from './goods/goods.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -28,14 +28,14 @@ import { OrderModule } from './order/orders.module';
       username: 'root',
       password: '123456',
       database: 'master',
-      entities: [Customers, Goods, Fav, Cart, Orders],
+      entities: [User, Goods, Fav, Cart, Orders],
       synchronize: false,
     }),
     CustomerModule,
     GoodsModule,
     FavModule,
     CartModule,
-    OrderModule
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

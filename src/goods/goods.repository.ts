@@ -34,7 +34,32 @@ export class GoodsRepository {
     });
   }
 
-  async updateGoodsInfo(goodsInfo: Partial<Goods>): Promise<void> {
-    await this.goodsRepository.save(goodsInfo);
+  async updateGoodsById(
+    goodId: number,
+    goodsInfo: Partial<Goods>,
+  ): Promise<void> {
+    await this.goodsRepository.update({ id: goodId }, goodsInfo);
+  }
+
+  async createGoods(
+    type: number,
+    amount: number,
+    goodName: string,
+    price: number,
+    image: string,
+  ): Promise<number> {
+    const goodsInfo = await this.goodsRepository.create({
+      type,
+      amount,
+      goodName,
+      price,
+      image,
+    });
+    const goods = await this.goodsRepository.save(goodsInfo);
+    return goods.id;
+  }
+
+  async deleteGoods(goodsId: number): Promise<void> {
+    await this.goodsRepository.delete({ id: goodsId });
   }
 }
