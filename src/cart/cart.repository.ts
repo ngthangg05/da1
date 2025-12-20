@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { QueryRunner, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from './cart.entity';
@@ -11,35 +11,51 @@ export class CartRepository {
     private cartRepository: Repository<Cart>,
   ) {}
 
-  async updateCartRecord(cartInfo: Partial<Cart>): Promise<void> {
-    await this.cartRepository.save(cartInfo);
+  private getRunnerRepository(queryRunner?: QueryRunner): Repository<Cart> {
+    return queryRunner
+      ? queryRunner.manager.getRepository(Cart)
+      : this.cartRepository;
+  }
+
+  async updateCartRecord(
+    cartInfo: Partial<Cart>,
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    await this.getRunnerRepository(queryRunner).save(cartInfo);
   }
 
   async createCartRecord(
     customerId: number,
     goodsId: number,
     amount: number,
+    queryRunner?: QueryRunner,
   ): Promise<number> {
-    const cartInfo = this.cartRepository.create({
+    const repo = this.getRunnerRepository(queryRunner);
+
+    const cartInfo = repo.create({
       customerId,
       goodsId,
       amount,
     });
-    const cart = await this.cartRepository.save(cartInfo);
+    const cart = await repo.save(cartInfo);
     return cart.id;
   }
 
   async getCartInfosByCustomerIdAndGoodsId(
     customerId: number,
     goodsId: number,
+    queryRunner?: QueryRunner,
   ) {
-    return await this.cartRepository.findOne({
+    return await this.getRunnerRepository(queryRunner).findOne({
       where: { customerId, goodsId },
     });
   }
 
-  async getCartInfos(customerId: number): Promise<CartGoodsInfo[]> {
-    return await this.cartRepository
+  async getCartInfos(
+    customerId: number,
+    queryRunner?: QueryRunner,
+  ): Promise<CartGoodsInfo[]> {
+    return await this.getRunnerRepository(queryRunner)
       .createQueryBuilder('cart')
       .select([
         'cart.id AS cartId',
@@ -56,7 +72,10 @@ export class CartRepository {
       .getRawMany<CartGoodsInfo>();
   }
 
-  async deleteCartById(cartId: number): Promise<void> {
-    await this.cartRepository.delete({ id: cartId });
+  async deleteCartById(
+    cartId: number,
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    await this.getRunnerRepository(queryRunner).delete({ id: cartId });
   }
 }

@@ -2,39 +2,47 @@ import { Injectable } from '@nestjs/common';
 import { GoodsRepository } from './goods.repository';
 import { Goods } from './goods.entity';
 import { Role } from 'src/common/constant';
+import { QueryRunner } from 'typeorm';
 
 @Injectable()
 export class GoodsService {
   constructor(private goodsRepository: GoodsRepository) {}
 
-  async getAllGoods(): Promise<Goods[]> {
-    return await this.goodsRepository.getAllGoods();
+  async getAllGoods(queryRunner?: QueryRunner): Promise<Goods[]> {
+    return await this.goodsRepository.getAllGoods(queryRunner);
   }
 
-  async getGoodsByTypeId(types: number[]): Promise<Goods[]> {
-    return await this.goodsRepository.getGoodsTypeId(types);
+  async getGoodsByTypeId(
+    types: number[],
+    queryRunner?: QueryRunner,
+  ): Promise<Goods[]> {
+    return await this.goodsRepository.getGoodsTypeId(types, queryRunner);
   }
 
-  async getGoodsInfo(goodsId: number): Promise<Goods | null> {
-    return await this.goodsRepository.getGoodsInfo(goodsId);
+  async getGoodsInfo(
+    goodsId: number,
+    queryRunner?: QueryRunner,
+  ): Promise<Goods | null> {
+    return await this.goodsRepository.getGoodsInfo(goodsId, queryRunner);
   }
 
   async updateGoodsInfo(
     goodId: number,
     goodsInfo: Partial<Goods>,
-    userRole: Role,
+    queryRunner?: QueryRunner,
   ): Promise<void> {
-    if (userRole !== Role.ADMIN) {
-      throw new Error('Unauthorized');
-    }
-    await this.goodsRepository.updateGoodsById(goodId, goodsInfo);
+    await this.goodsRepository.updateGoodsById(goodId, goodsInfo, queryRunner);
   }
 
-  async updateGoodsAmount(goodId: number, amount: number): Promise<void> {
+  async updateGoodsAmount(
+    goodId: number,
+    amount: number,
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
     const goodsInfo: Partial<Goods> = {
       amount,
     };
-    await this.goodsRepository.updateGoodsById(goodId, goodsInfo);
+    await this.goodsRepository.updateGoodsById(goodId, goodsInfo, queryRunner);
   }
 
   async createGoods(
@@ -43,24 +51,19 @@ export class GoodsService {
     goodName: string,
     price: number,
     image: string,
-    userRole: Role,
+    queryRunner?: QueryRunner,
   ): Promise<number> {
-    if (userRole !== Role.ADMIN) {
-      throw new Error('Unauthorized');
-    }
     return await this.goodsRepository.createGoods(
       type,
       amount,
       goodName,
       price,
       image,
+      queryRunner,
     );
   }
 
-  async deleteGoods(goodsId: number, userRole: Role): Promise<void> {
-    if (userRole !== Role.ADMIN) {
-      throw new Error('Unauthorized');
-    }
-    await this.goodsRepository.deleteGoods(goodsId);
+  async deleteGoods(goodsId: number, queryRunner?: QueryRunner): Promise<void> {
+    await this.goodsRepository.deleteGoods(goodsId, queryRunner);
   }
 }

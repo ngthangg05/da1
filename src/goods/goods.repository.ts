@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Goods } from './goods.entity';
-import { In, Repository } from 'typeorm';
+import { In, QueryRunner, Repository } from 'typeorm';
 
 @Injectable()
 export class GoodsRepository {
@@ -10,14 +10,23 @@ export class GoodsRepository {
     private goodsRepository: Repository<Goods>,
   ) {}
 
-  async getAllGoods(): Promise<Goods[]> {
-    return await this.goodsRepository.find({
+  private getRunnerRepository(queryRunner?: QueryRunner): Repository<Goods> {
+    return queryRunner
+      ? queryRunner.manager.getRepository(Goods)
+      : this.goodsRepository;
+  }
+
+  async getAllGoods(queryRunner?: QueryRunner): Promise<Goods[]> {
+    return await this.getRunnerRepository(queryRunner).find({
       select: ['id', 'type', 'amount', 'goodName', 'price', 'image'],
     });
   }
 
-  async getGoodsTypeId(typeIds: number[]): Promise<Goods[]> {
-    return await this.goodsRepository.find({
+  async getGoodsTypeId(
+    typeIds: number[],
+    queryRunner?: QueryRunner,
+  ): Promise<Goods[]> {
+    return await this.getRunnerRepository(queryRunner).find({
       select: ['id', 'type', 'amount', 'goodName', 'price', 'image'],
       where: {
         type: In(typeIds),
@@ -25,8 +34,11 @@ export class GoodsRepository {
     });
   }
 
-  async getGoodsInfo(goodsId: number): Promise<Goods | null> {
-    return await this.goodsRepository.findOne({
+  async getGoodsInfo(
+    goodsId: number,
+    queryRunner?: QueryRunner,
+  ): Promise<Goods | null> {
+    return await this.getRunnerRepository(queryRunner).findOne({
       select: ['id', 'type', 'amount', 'goodName', 'price', 'image'],
       where: {
         id: goodsId,
@@ -37,8 +49,12 @@ export class GoodsRepository {
   async updateGoodsById(
     goodId: number,
     goodsInfo: Partial<Goods>,
+    queryRunner?: QueryRunner,
   ): Promise<void> {
-    await this.goodsRepository.update({ id: goodId }, goodsInfo);
+    await this.getRunnerRepository(queryRunner).update(
+      { id: goodId },
+      goodsInfo,
+    );
   }
 
   async createGoods(
@@ -47,19 +63,21 @@ export class GoodsRepository {
     goodName: string,
     price: number,
     image: string,
+    queryRunner?: QueryRunner,
   ): Promise<number> {
-    const goodsInfo = await this.goodsRepository.create({
+    const repo = this.getRunnerRepository(queryRunner);
+    const goodsInfo = await repo.create({
       type,
       amount,
       goodName,
       price,
       image,
     });
-    const goods = await this.goodsRepository.save(goodsInfo);
+    const goods = await repo.save(goodsInfo);
     return goods.id;
   }
 
-  async deleteGoods(goodsId: number): Promise<void> {
-    await this.goodsRepository.delete({ id: goodsId });
+  async deleteGoods(goodsId: number, queryRunner?: QueryRunner): Promise<void> {
+    await this.getRunnerRepository(queryRunner).delete({ id: goodsId });
   }
 }

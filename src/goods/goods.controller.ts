@@ -11,8 +11,9 @@ import { Goods } from './goods.entity';
 import { GoodsService } from './goods.service';
 import { GoodsInfo } from './interface/goods.interface';
 import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
-import { User } from 'src/user/user.decorator';
+import { User } from 'src/common/user.decorator';
 import { Role } from 'src/common/constant';
+import { Roles } from 'src/common/roles.decorator';
 
 @Controller()
 export class GoodsController {
@@ -39,6 +40,7 @@ export class GoodsController {
 
   @Post('goods/create')
   @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN)
   async createGoods(
     @User('role') userRole: Role,
     @Body() goodsInfo: GoodsInfo,
@@ -49,25 +51,20 @@ export class GoodsController {
       goodsInfo.name,
       goodsInfo.price,
       goodsInfo.image,
-      userRole,
     );
   }
 
   @Post('goods/update')
   @UseGuards(JwtAuthGuard)
-  async updateGoods(
-    @User('role') userRole: Role,
-    @Body() goodsInfo: Goods,
-  ): Promise<void> {
-    await this.goodsService.updateGoodsInfo(goodsInfo.id, goodsInfo, userRole);
+  @Roles(Role.ADMIN)
+  async updateGoods(@Body() goodsInfo: Goods): Promise<void> {
+    await this.goodsService.updateGoodsInfo(goodsInfo.id, goodsInfo);
   }
 
   @Post('goods/delete')
   @UseGuards(JwtAuthGuard)
-  async deleteGoods(
-    @User('role') userRole: Role,
-    @Body('goodsId') goodsId: number,
-  ): Promise<void> {
-    await this.goodsService.deleteGoods(goodsId, userRole);
+  @Roles(Role.ADMIN)
+  async deleteGoods(@Body('goodsId') goodsId: number): Promise<void> {
+    await this.goodsService.deleteGoods(goodsId);
   }
 }
