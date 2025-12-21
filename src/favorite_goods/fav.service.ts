@@ -11,7 +11,6 @@ export class FavService {
   }
 
   async getFav(customerId: number): Promise<FavGoodsInfo[]> {
-    console.log(customerId);
     return await this.favRepository.getFav(customerId);
   }
 

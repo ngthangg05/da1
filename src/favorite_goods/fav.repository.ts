@@ -21,7 +21,7 @@ export class FavRepository {
   }
 
   async getFav(customerId: number): Promise<FavGoodsInfo[]> {
-    const query = await this.favRepository
+    return await this.favRepository
       .createQueryBuilder('fav')
       .select([
         'fav.id AS favId',
@@ -34,9 +34,8 @@ export class FavRepository {
         'goods.image AS image',
       ])
       .innerJoin('goods', 'goods', 'fav.goodsId = goods.id')
-      .where('fav.customerId = :customerId', { customerId });
-      console.log(query.getSql());
-      return await query.getRawMany<FavGoodsInfo>();
+      .where('fav.customerId = :customerId', { customerId })
+      .getRawMany<FavGoodsInfo>();
   }
 
   async deleteFav(favId: number): Promise<void> {

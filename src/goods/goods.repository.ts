@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Goods } from './goods.entity';
-import { In, QueryRunner, Repository } from 'typeorm';
+import { In, MoreThan, QueryRunner, Repository } from 'typeorm';
+import { Role } from 'src/common/constant';
 
 @Injectable()
 export class GoodsRepository {
@@ -16,20 +17,25 @@ export class GoodsRepository {
       : this.goodsRepository;
   }
 
-  async getAllGoods(queryRunner?: QueryRunner): Promise<Goods[]> {
+  async getAllGoods(role: Role, queryRunner?: QueryRunner): Promise<Goods[]> {
+    const condition = role === Role.ADMIN ? {} : { amount: MoreThan(0) };
     return await this.getRunnerRepository(queryRunner).find({
       select: ['id', 'type', 'amount', 'goodName', 'price', 'image'],
+      where: condition,
     });
   }
 
   async getGoodsTypeId(
+    role: Role,
     typeIds: number[],
     queryRunner?: QueryRunner,
   ): Promise<Goods[]> {
+    const condition = role === Role.ADMIN ? {} : { amount: MoreThan(0) };
     return await this.getRunnerRepository(queryRunner).find({
       select: ['id', 'type', 'amount', 'goodName', 'price', 'image'],
       where: {
         type: In(typeIds),
+        ...condition,
       },
     });
   }

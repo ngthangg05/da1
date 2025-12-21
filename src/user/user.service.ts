@@ -52,11 +52,14 @@ export class UserService {
   async login(
     username: string,
     password: string,
-  ): Promise<{ access_token: string } | null> {
+  ): Promise<{ access_token: string, role: Role } | null> {
     const user = await this.userRepository.getUserByUsername(username);
     if (user) {
       await this.validatePassword(password, user.passwordHash);
-      return await this.generateToken(user);
+      return {
+        role: user.role,
+        ...(await this.generateToken(user))
+      };
     }
     return null;
   }

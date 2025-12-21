@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CartGoodsInfo, CartInfo } from './interface/cart.interface';
 import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
+import { User } from 'src/common/user.decorator';
+import { UserTokenInfo } from 'src/user/interface/customer.interface';
 
 @Controller()
 export class CartController {
@@ -9,9 +11,12 @@ export class CartController {
 
   @Post('cart/create')
   @UseGuards(JwtAuthGuard)
-  async createCart(@Body() cartInfo: CartInfo): Promise<number | null> {
+  async createCart(
+    @User() user: UserTokenInfo,
+    @Body() cartInfo: CartInfo,
+  ): Promise<number | null> {
     return await this.cartService.createCart(
-      cartInfo.customerId,
+      user.id,
       cartInfo.goodsId,
       cartInfo.amount,
     );
@@ -19,17 +24,18 @@ export class CartController {
 
   @Get('cart/get')
   @UseGuards(JwtAuthGuard)
-  async getCarts(
-    @Query('customerId') customerId: number,
-  ): Promise<CartGoodsInfo[]> {
-    return await this.cartService.getCartInfos(customerId);
+  async getCarts(@User() user: UserTokenInfo): Promise<CartGoodsInfo[]> {
+    return await this.cartService.getCartInfos(user.id);
   }
 
   @Post('cart/delete')
   @UseGuards(JwtAuthGuard)
-  async deleteCart(@Body() cartInfo: CartInfo): Promise<void> {
+  async deleteCart(
+    @User() user: UserTokenInfo,
+    @Body() cartInfo: CartInfo,
+  ): Promise<void> {
     await this.cartService.deleteCartGoods(
-      cartInfo.customerId,
+      user.id,
       cartInfo.goodsId,
       cartInfo.amount,
     );
@@ -37,9 +43,7 @@ export class CartController {
 
   @Post('cart/pay')
   @UseGuards(JwtAuthGuard)
-  async payCart(
-    @Body('customerId') customerId: number,
-  ): Promise<number | null> {
-    return await this.cartService.payCart(customerId);
+  async payCart(@User() user: UserTokenInfo): Promise<number | null> {
+    return await this.cartService.payCart(user.id);
   }
 }

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserInfo } from './interface/customer.interface';
+import { Role } from 'src/common/constant';
 
 @Controller()
 export class UserController {
@@ -17,7 +18,7 @@ export class UserController {
   @Post('user/login')
   async getCustomerId(
     @Body() customerInfo: UserInfo,
-  ): Promise<{ access_token: string } | null> {
+  ): Promise<{ access_token: string, role: Role } | null> {
     return await this.customerService.login(
       customerInfo.username,
       customerInfo.password,

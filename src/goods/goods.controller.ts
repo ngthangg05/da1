@@ -14,6 +14,7 @@ import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
 import { User } from 'src/common/user.decorator';
 import { Role } from 'src/common/constant';
 import { Roles } from 'src/common/roles.decorator';
+import { UserTokenInfo } from 'src/user/interface/customer.interface';
 
 @Controller()
 export class GoodsController {
@@ -22,12 +23,13 @@ export class GoodsController {
   @Get('goods')
   @UseGuards(JwtAuthGuard)
   async getGoodsByTypeId(
+    @User() user: UserTokenInfo,
     @Query('typeIds') typeIds?: number[],
   ): Promise<Goods[]> {
     if (!typeIds) {
-      return await this.goodsService.getAllGoods();
+      return await this.goodsService.getAllGoods(user.role);
     }
-    return await this.goodsService.getGoodsByTypeId(typeIds);
+    return await this.goodsService.getGoodsByTypeId(user.role, typeIds);
   }
 
   @Get('goods-details')

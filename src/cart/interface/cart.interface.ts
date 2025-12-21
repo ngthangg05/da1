@@ -1,5 +1,4 @@
 export interface CartInfo {
-  customerId: number;
   goodsId: number;
   amount: number;
 }

@@ -1,8 +1,3 @@
-export interface FavInfo {
-  customerId: number;
-  goodsId: number;
-}
-
 export interface FavGoodsInfo {
   favId: number;
   customerId: number;

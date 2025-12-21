@@ -8,15 +8,16 @@ import { QueryRunner } from 'typeorm';
 export class GoodsService {
   constructor(private goodsRepository: GoodsRepository) {}
 
-  async getAllGoods(queryRunner?: QueryRunner): Promise<Goods[]> {
-    return await this.goodsRepository.getAllGoods(queryRunner);
+  async getAllGoods(role: Role, queryRunner?: QueryRunner): Promise<Goods[]> {
+    return await this.goodsRepository.getAllGoods(role, queryRunner);
   }
 
   async getGoodsByTypeId(
+    role: Role,
     types: number[],
     queryRunner?: QueryRunner,
   ): Promise<Goods[]> {
-    return await this.goodsRepository.getGoodsTypeId(types, queryRunner);
+    return await this.goodsRepository.getGoodsTypeId(role, types, queryRunner);
   }
 
   async getGoodsInfo(
@@ -64,6 +65,8 @@ export class GoodsService {
   }
 
   async deleteGoods(goodsId: number, queryRunner?: QueryRunner): Promise<void> {
-    await this.goodsRepository.deleteGoods(goodsId, queryRunner);
+    await this.goodsRepository.updateGoodsById(goodsId, {
+      amount: 0,
+    }, queryRunner);
   }
 }
