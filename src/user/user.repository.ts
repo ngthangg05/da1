@@ -1,8 +1,9 @@
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { UserTokenInfo } from './interface/customer.interface';
+import { UserDetail } from './interface/customer.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Orders } from 'src/order/orders.entity';
 
 @Injectable()
 export class UserRepository {
@@ -32,5 +33,20 @@ export class UserRepository {
         username,
       },
     });
+  }
+
+  async getAllCustomer(): Promise<UserDetail[]> {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin(Orders, 'orders', 'orders.customerId = user.id')
+      .select([
+        'user.id AS id',
+        'user.username AS username',
+        'COALESCE(SUM(orders.price * orders.amount), 0) AS revenue',
+      ])
+      .where('user.role = :role', { role: 0 })
+      .groupBy('user.id')
+      .addGroupBy('user.username')
+      .getRawMany();
   }
 }

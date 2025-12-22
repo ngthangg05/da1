@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserInfo } from './interface/customer.interface';
+import { UserDetail, UserInfo } from './interface/customer.interface';
 import { Role } from 'src/common/constant';
+import { Roles } from 'src/common/roles.decorator';
 
 @Controller()
 export class UserController {
@@ -23,5 +24,11 @@ export class UserController {
       customerInfo.username,
       customerInfo.password,
     );
+  }
+
+    @Get('user/get')
+    @Roles(Role.ADMIN)
+  async getAllCustomer(): Promise<UserDetail[]> {
+    return await this.customerService.getAllCustomer();
   }
 }

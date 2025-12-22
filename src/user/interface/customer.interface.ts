@@ -6,3 +6,9 @@ export interface UserInfo {
 }
 
 export type UserTokenInfo = Pick<User, 'id' | 'username' | 'role'>;
+
+export interface UserDetail {
+  id: number;
+  username: string;
+  revenue: number;
+};

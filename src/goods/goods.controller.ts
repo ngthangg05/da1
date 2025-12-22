@@ -24,12 +24,20 @@ export class GoodsController {
   @UseGuards(JwtAuthGuard)
   async getGoodsByTypeId(
     @User() user: UserTokenInfo,
-    @Query('typeIds') typeIds?: number[],
+    @Query('typeIds') typeIds?: string,
   ): Promise<Goods[]> {
-    if (!typeIds) {
+
+    let parsedTypeIds: number[] = [];
+    if (typeIds) {
+      parsedTypeIds = typeIds
+        .split(',')
+        .map((id) => Number(id))
+        .filter((id) => !isNaN(id));
+    }
+    if (parsedTypeIds.length === 0) {
       return await this.goodsService.getAllGoods(user.role);
     }
-    return await this.goodsService.getGoodsByTypeId(user.role, typeIds);
+    return await this.goodsService.getGoodsByTypeId(user.role, parsedTypeIds);
   }
 
   @Get('goods-details')

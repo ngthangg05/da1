@@ -63,6 +63,6 @@ CREATE TABLE `orders` (
   CONSTRAINT `orders_user_FK` FOREIGN KEY (`customer_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO master.`user` (username,password_hash,`role`) VALUES
+INSERT INTO `user` (username,password_hash,`role`) VALUES
 	 ('admin@gmail.com','$2b$10$PAajfMQ4rk0Hdmu2vlnUZO9no1.3Qussqr1ENuX6Rf0pK14IbNMm2',1),
 	 ('customer@gmail.com','$2b$10$tIkyVnuwLoosm6.UqGETq.7WUpQ2k0TuVAabmKVl4i7zLo7uJq9Yy',0);

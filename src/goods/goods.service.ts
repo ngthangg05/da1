@@ -17,7 +17,8 @@ export class GoodsService {
     types: number[],
     queryRunner?: QueryRunner,
   ): Promise<Goods[]> {
-    return await this.goodsRepository.getGoodsTypeId(role, types, queryRunner);
+    const a = await this.goodsRepository.getGoodsTypeId(role, types, queryRunner);
+    return a;
   }
 
   async getGoodsInfo(

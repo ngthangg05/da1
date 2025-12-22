@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserTokenInfo } from './interface/customer.interface';
+import { UserDetail, UserTokenInfo } from './interface/customer.interface';
 import { UserRepository } from './user.repository';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -52,15 +52,19 @@ export class UserService {
   async login(
     username: string,
     password: string,
-  ): Promise<{ access_token: string, role: Role } | null> {
+  ): Promise<{ access_token: string; role: Role } | null> {
     const user = await this.userRepository.getUserByUsername(username);
     if (user) {
       await this.validatePassword(password, user.passwordHash);
       return {
         role: user.role,
-        ...(await this.generateToken(user))
+        ...(await this.generateToken(user)),
       };
     }
     return null;
+  }
+
+  async getAllCustomer(): Promise<UserDetail[]> {
+    return await this.userRepository.getAllCustomer();
   }
 }
